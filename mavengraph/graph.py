@@ -1,4 +1,4 @@
-"""Iterative DFS with re-expansion when a shorter path is discovered."""
+"""Обход графа с учетом глубины."""
 
 
 def build_graph(repository, root, max_depth, substring=""):
@@ -27,7 +27,7 @@ def build_graph(repository, root, max_depth, substring=""):
 
 
 def loading_order(graph):
-    """Dependencies first, each once. A cycle has no valid linear ordering."""
+    """Зависимости выводятся раньше потребителя. Для цикла порядка нет."""
     colors, result = {}, []
     for start in graph:
         if colors.get(start):

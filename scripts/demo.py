@@ -1,4 +1,4 @@
-"""Reproducible offline CLI demonstrations; run from the repository root."""
+"""Примеры запуска на тестовых графах. Запускать из папки проекта."""
 import subprocess
 import sys
 from pathlib import Path

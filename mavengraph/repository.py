@@ -1,4 +1,4 @@
-"""Read Maven POM metadata directly over HTTP, without a package manager."""
+"""Чтение Maven POM и тестового репозитория."""
 import json
 import re
 import xml.etree.ElementTree as ET

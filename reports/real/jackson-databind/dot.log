@@ -6,7 +6,7 @@
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
 [INFO] --- dependency:3.8.1:tree (default-cli) @ comparison ---
-[INFO] Wrote dependency tree to: C:\Users\Admin\Documents\Codex\2026-11-20\1-cli-1-2-url-3\outputs\maven-graph\reports\real\jackson-databind\maven.dot
+[INFO] Wrote dependency tree to: <project>\reports\real\jackson-databind\maven.dot
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -15,11 +15,11 @@
 [INFO] ------------------------------------------------------------------------
 Access is denied.
 WARNING: A restricted method in java.lang.System has been called
-WARNING: java.lang.System::load has been called by org.fusesource.jansi.internal.JansiLoader in an unnamed module (file:/C:/Users/Admin/Documents/Codex/2026-11-20/1-cli-1-2-url-3/outputs/maven-graph/.tools/apache-maven-3.9.9/lib/jansi-2.4.1.jar)
+WARNING: java.lang.System::load has been called by org.fusesource.jansi.internal.JansiLoader in an unnamed module (file:/<project>/.tools/apache-maven-3.9.9/lib/jansi-2.4.1.jar)
 WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
 WARNING: Restricted methods will be blocked in a future release unless native access is enabled
 
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/C:/Users/Admin/Documents/Codex/2026-11-20/1-cli-1-2-url-3/outputs/maven-graph/.tools/apache-maven-3.9.9/lib/guava-33.2.1-jre.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/<project>/.tools/apache-maven-3.9.9/lib/guava-33.2.1-jre.jar)
 WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release

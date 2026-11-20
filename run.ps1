@@ -1,27 +1,34 @@
-# Run from any directory. Prefer installed Python, then Codex's bundled runtime.
+# Запуск приложения из любой папки.
 $ErrorActionPreference = 'Stop'
-$pythonCommand = Get-Command python -ErrorAction SilentlyContinue
-$pythonPath = if ($env:MAVENGRAPH_PYTHON) { $env:MAVENGRAPH_PYTHON } elseif ($pythonCommand -and $pythonCommand.Source -notlike '*Microsoft\WindowsApps*') { $pythonCommand.Source } else { $null }
-if (-not $pythonPath) {
-    $runtime = Get-ChildItem 'C:\Program Files\WindowsApps\OpenAI.CodexPrimaryRuntime*\dependencies\python\python.exe' -ErrorAction SilentlyContinue | Select-Object -Last 1
-    if ($runtime) { $pythonPath = $runtime.FullName }
+$pythonPath = $env:MAVENGRAPH_PYTHON
+$pythonArgs = @()
+$localConfig = Join-Path $PSScriptRoot '.local\python.txt'
+if (-not $pythonPath -and (Test-Path -LiteralPath $localConfig)) {
+    $pythonPath = (Get-Content -LiteralPath $localConfig -Raw).Trim()
 }
 if (-not $pythonPath) {
-    # Direct fallback for this desktop: WindowsApps directory enumeration can be restricted.
-    $knownRuntime = 'C:\Program Files\WindowsApps\OpenAI.CodexPrimaryRuntime.v26-1117-1425-0_26.1117.1425.0_x64__3k8sg7r9htsxt\dependencies\python\python.exe'
-    if (Test-Path -LiteralPath $knownRuntime) { $pythonPath = $knownRuntime }
+    foreach ($name in @('python', 'py')) {
+        $command = Get-Command $name -ErrorAction SilentlyContinue
+        if ($command -and $command.Source -notlike '*Microsoft\WindowsApps*') {
+            $pythonPath = $command.Source
+            if ($name -eq 'py') { $pythonArgs = @('-3') }
+            break
+        }
+    }
 }
-if (-not $pythonPath) { throw 'Python 3.10+ не найден. Установите Python и запустите python -m mavengraph.' }
-$env:PYTHONIOENCODING = 'utf-8'
+if (-not $pythonPath) { throw 'Python не найден. Установите Python 3.10+ или задайте путь в MAVENGRAPH_PYTHON.' }
+$savedPath = $env:PATH
+$savedEncoding = $env:PYTHONIOENCODING
 Push-Location $PSScriptRoot
 try {
-    $bundledDot = Join-Path $PSScriptRoot '.tools\graphviz\Graphviz-16.1.1-win64\bin'
-    $savedPath = $env:PATH
-    if (Test-Path $bundledDot) { $env:PATH = "$bundledDot;$env:PATH" }
-    & $pythonPath -m mavengraph @args
+    $env:PYTHONIOENCODING = 'utf-8'
+    $localDot = Get-ChildItem (Join-Path $PSScriptRoot '.tools\graphviz\*\bin\dot.exe') -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($localDot) { $env:PATH = "$($localDot.DirectoryName);$env:PATH" }
+    & $pythonPath @pythonArgs -m mavengraph @args
     $resultCode = $LASTEXITCODE
 } finally {
     $env:PATH = $savedPath
+    $env:PYTHONIOENCODING = $savedEncoding
     Pop-Location
 }
 exit $resultCode

@@ -1,7 +1,6 @@
-"""Maven is used ONLY here as an independent reference, never by the application."""
+"""Сравнение графа приложения с выводом Maven."""
 import argparse
 import json
-import os
 from pathlib import Path
 import re
 import subprocess
@@ -13,6 +12,11 @@ from mavengraph.graph import build_graph, loading_order
 
 PACKAGES = ['junit:junit:4.13.2', 'org.apache.commons:commons-text:1.12.0',
             'com.fasterxml.jackson.core:jackson-databind:2.17.2']
+
+
+def portable_log(text):
+    root = Path(__file__).resolve().parents[1]
+    return text.replace(str(root), '<project>').replace(root.as_posix(), '<project>')
 
 
 def main():
@@ -35,10 +39,10 @@ def main():
                     (['org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree', '-Dscope=runtime', '-DoutputType=text', f'-DoutputFile={dest / "maven-tree.txt"}'], 'tree.log'),
                     (['org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree', '-Dscope=runtime', '-DoutputType=dot', f'-DoutputFile={dest / "maven.dot"}'], 'dot.log')]
         for flags, log in commands:
-            # Preserve download messages for comparison of actual transfer order.
+            # Строки Downloaded нужны для сравнения порядка скачивания.
             command = [x for x in common if x != '-ntp'] + flags
             result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=240)
-            (dest / log).write_text(result.stdout + result.stderr, encoding='utf-8')
+            (dest / log).write_text(portable_log(result.stdout + result.stderr), encoding='utf-8')
             if result.returncode:
                 raise RuntimeError(f'Maven failed; see {dest / log}')
         tree = (dest / 'maven-tree.txt').read_text(encoding='utf-8')

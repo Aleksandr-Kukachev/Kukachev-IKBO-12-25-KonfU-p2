@@ -1,4 +1,4 @@
-"""Render our graphs and Maven's DOT output using the same Graphviz binary."""
+"""Построение изображений по графам приложения и Maven."""
 import argparse
 import json
 from pathlib import Path
