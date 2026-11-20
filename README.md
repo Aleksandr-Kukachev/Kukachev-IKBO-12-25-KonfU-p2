@@ -14,7 +14,7 @@
 
 ## Этап 2
 
-Приложение читает POM по пути `groupId/artifactId/version/artifactId-version.pom`, разбирает XML, parent, свойства и dependencyManagement (включая BOM imports). Выводит прямые compile/runtime зависимости, исключая optional. Данные кэшируются в памяти. Ошибки сети, XML, отсутствующих версий и циклов parent/BOM возвращают код 1.
+Приложение читает POM по пути `groupId/artifactId/version/artifactId-version.pom`, разбирает XML, parent, свойства и dependencyManagement (включая BOM imports). В окончательной версии режим direct выводит все объявленные прямые зависимости, включая test/provided/optional; режимы графа используют compile/runtime без optional. Данные кэшируются в памяти. Ошибки сети, XML, отсутствующих версий и циклов parent/BOM возвращают код 1.
 
 ## Этап 3
 
@@ -31,3 +31,36 @@ JSON содержит объект `{ "A": ["B"], "B": [] }`. Каждая сс�
 Порядок D, B, C, A: зависимости раньше потребителей, корень последний. Это обратный топологический порядок, вычисляемый итеративным DFS. Для цикла линейный порядок невозможен: программа сообщает путь цикла и код 1. При ограничении глубины порядок относится только к построенному графу.
 
 `python scripts/demo.py` записывает воспроизводимую демонстрацию разных тестовых графов, глубины, фильтра и ошибок в `reports/demo.txt`.
+
+## Этап 5 — запуск и изображения
+
+```powershell
+# В этой папке на текущем компьютере можно использовать .\run.ps1 вместо python -m mavengraph
+.\run.ps1 --test-mode --package A --repository examples/cycle.json --mode image --output build/cycle.svg --show
+.\run.ps1 --package junit:junit:4.13.2 --repository https://repo.maven.apache.org/maven2 --mode image --output build/junit.png --show
+```
+
+Для переноса проекта нужны Python 3.10+ и [Graphviz](https://graphviz.org/download/). Python-пакеты устанавливать не требуется. Graphviz используется только для рисования готового DOT. `--dot` задает путь к dot, `--output` — SVG/PNG, `--show` открывает файл в браузере/просмотрщике. Без `--show` создается файл. `--mode dot` выводит DOT в stdout и не требует Graphviz. Если Graphviz отсутствует, DOT сохраняется рядом с запрошенным изображением, программа объясняет ошибку и возвращает 1.
+
+В `reports/real` находятся готовые PNG/SVG для **JUnit 4.13.2**, **Commons Text 1.12.0**, **Jackson Databind 2.17.2**: `graph.*` — наш результат, `maven.*` — штатный DOT Maven, отрисованный тем же Graphviz. В `reports/test` — пять тестовых графов. Стрелка A → B означает «A зависит от B», зеленый узел — корень.
+
+## Проверка и сравнение
+
+```text
+python -m unittest discover -s tests -v
+python scripts/demo.py
+python scripts/compare.py --mvn /path/to/mvn
+python scripts/render_examples.py --dot /path/to/dot
+```
+
+Для compare требуется JDK и Maven. Он используется исключительно отдельным скриптом сравнения; приложение Maven не вызывает. Скрипт сохраняет реальные stdout/stderr Maven и использует отдельный локальный кэш `build/maven-cache`. Сетевой порядок при повторном запуске может отсутствовать из-за кэша. Подробности и наблюдаемые расхождения: [REPORT.md](REPORT.md).
+
+## Границы модели Maven
+
+Это учебный анализатор объявленного графа, а не полная реализация Maven Resolver. Поддержаны фиксированные release-версии, обычные parent и BOM, свойства и compile/runtime-зависимости. Не реализованы профили, exclusions, разрешение конфликтов версий по nearest-wins, перенос управления версиями корня на весь транзитивный граф, classifiers/types как разные вершины, relocation, repositories внутри POM, Maven settings и timestamped SNAPSHOT metadata. Диапазоны и неразрешенные свойства вызывают ошибку. Сложные правила наследования effective POM/BOM могут отличаться от Maven. Эти ограничения способны дать лишние вершины или иные версии; совпадение на трех примерах не означает полной совместимости с Maven.
+
+При `--max-depth 0` реальный репозиторий не запрашивается, поэтому существование Maven-пакета не проверяется. В тестовом режиме весь JSON проверяется до обхода. Фильтр регистрозависим и применяется к artifactId (к полному буквенному имени в тестовом режиме), исключая всю соответствующую ветку, если к потомкам нет другого пути.
+
+## История этапов
+
+Каждый этап оформлен отдельным Conventional Commit (`git log --oneline --reverse`). Первые два состояния показывают специальный вывод своих этапов; итоговое приложение сохраняет этот функционал в режимах config и direct.

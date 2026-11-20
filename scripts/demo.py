@@ -25,6 +25,10 @@ def main():
         result = subprocess.run([sys.executable, '-m', 'mavengraph', *args], capture_output=True, text=True, encoding='utf-8')
         lines.extend(['> python -m mavengraph ' + subprocess.list2cmdline(args),
                       f'exit={result.returncode}', result.stdout, result.stderr])
+    for extra in (['--package', 'invalid'], ['--repository', 'ftp://example.org'], ['--repository', 'https://example.org:bad']):
+        args = ['--package', 'junit:junit:4.13.2', '--repository', 'https://repo.maven.apache.org/maven2', '--mode', 'config'] + extra
+        result = subprocess.run([sys.executable, '-m', 'mavengraph', *args], capture_output=True, text=True, encoding='utf-8')
+        lines.extend(['> python -m mavengraph ' + subprocess.list2cmdline(args), f'exit={result.returncode}', result.stdout, result.stderr])
     Path('reports').mkdir(exist_ok=True)
     Path('reports/demo.txt').write_text('\n'.join(lines), encoding='utf-8')
 

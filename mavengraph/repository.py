@@ -94,7 +94,7 @@ class MavenRepository:
         finally:
             self.active.remove(package)
 
-    def dependencies(self, package):
+    def dependencies(self, package, include_all=False):
         props, management, declared = self.model(package)
         merged = {}
         for raw in declared:
@@ -105,7 +105,7 @@ class MavenRepository:
             merged[key] = effective
         result = []
         for dep in merged.values():
-            if dep.get("scope", "compile") not in ("compile", "runtime") or dep.get("optional") == "true":
+            if not include_all and (dep.get("scope", "compile") not in ("compile", "runtime") or dep.get("optional") == "true"):
                 continue
             target = ":".join(expand(dep.get(k, ""), props) for k in ("groupId", "artifactId", "version"))
             try:

@@ -18,9 +18,16 @@ def options(argv=None):
     parser.add_argument("--test-mode", action="store_true", help="читать тестовый JSON")
     parser.add_argument("--max-depth", type=int, default=10, help="число ребер от корня; 0 — только корень")
     parser.add_argument("--filter", default="", help="исключить имена с подстрокой, регистр учитывается")
-    parser.add_argument("--mode", choices=("config", "direct", "graph", "order"), default="graph")
+    parser.add_argument("--mode", choices=("config", "direct", "graph", "order", "dot", "image"), default="graph")
+    parser.add_argument("--output", default="build/graph.svg", help="путь к SVG/PNG для режима image")
+    parser.add_argument("--dot", default="dot", help="путь к исполняемому файлу Graphviz")
+    parser.add_argument("--show", action="store_true", help="открыть изображение в просмотрщике")
     args = parser.parse_args(argv)
     try:
+        if args.show and args.mode != "image":
+            raise ValueError("--show применяется только с --mode image")
+        if args.mode == "image" and Path(args.output).suffix.lower() not in (".svg", ".png"):
+            raise ValueError("--output должен иметь расширение .svg или .png")
         if args.test_mode:
             if not re.fullmatch("[A-Z]+", args.package):
                 raise ValueError("тестовое имя должно состоять из больших латинских букв")
@@ -58,7 +65,8 @@ def main(argv=None):
         if args.test_mode and args.package not in repository.graph:
             raise ValueError(f"пакет {args.package} отсутствует в тестовом репозитории")
         if args.mode == "direct":
-            for dependency in repository.dependencies(args.package):
+            direct = repository.dependencies(args.package) if args.test_mode else repository.dependencies(args.package, include_all=True)
+            for dependency in direct:
                 print(dependency)
         else:
             from .graph import build_graph
@@ -67,6 +75,12 @@ def main(argv=None):
             if args.mode == "order":
                 from .graph import loading_order
                 print("\n".join(loading_order(graph)))
+            elif args.mode == "dot":
+                from .visualize import to_dot
+                print(to_dot(graph, args.package), end="")
+            elif args.mode == "image":
+                from .visualize import render
+                print(render(graph, args.package, args.output, args.dot, args.show))
             else:
                 print(json.dumps(graph, indent=2, ensure_ascii=False))
     except (ValueError, OSError) as exc:

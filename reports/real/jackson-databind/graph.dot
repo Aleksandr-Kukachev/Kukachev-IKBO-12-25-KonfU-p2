@@ -1,0 +1,11 @@
+digraph dependencies {
+  rankdir=LR;
+  graph [bgcolor="#f5f7fb", pad="0.4"];
+  node [shape=box, style="rounded,filled", fillcolor="#e0edff", fontname="Arial"];
+  edge [color="#64748b"];
+  "com.fasterxml.jackson.core:jackson-databind:2.17.2" [fillcolor="#99d9c8", penwidth=2];
+  "com.fasterxml.jackson.core:jackson-annotations:2.17.2";
+  "com.fasterxml.jackson.core:jackson-core:2.17.2";
+  "com.fasterxml.jackson.core:jackson-databind:2.17.2" -> "com.fasterxml.jackson.core:jackson-annotations:2.17.2";
+  "com.fasterxml.jackson.core:jackson-databind:2.17.2" -> "com.fasterxml.jackson.core:jackson-core:2.17.2";
+}

@@ -1,0 +1,9 @@
+digraph dependencies {
+  rankdir=LR;
+  graph [bgcolor="#f5f7fb", pad="0.4"];
+  node [shape=box, style="rounded,filled", fillcolor="#e0edff", fontname="Arial"];
+  edge [color="#64748b"];
+  "junit:junit:4.13.2" [fillcolor="#99d9c8", penwidth=2];
+  "org.hamcrest:hamcrest-core:1.3";
+  "junit:junit:4.13.2" -> "org.hamcrest:hamcrest-core:1.3";
+}

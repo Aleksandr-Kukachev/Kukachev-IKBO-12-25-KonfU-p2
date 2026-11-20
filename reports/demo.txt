@@ -6,6 +6,9 @@ test_mode=True
 max_depth=10
 filter=
 mode=config
+output=build/graph.svg
+dot=dot
+show=False
 
 
 > python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository examples/cycle.json
@@ -119,7 +122,8 @@ exit=2
 
 usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
                    [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
-                   [--mode {config,direct,graph,order}]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
 __main__.py: error: максимальная глубина должна быть неотрицательной
 
 > python -m mavengraph --test-mode --package A --repository examples/diamond.json --max-depth bad
@@ -127,7 +131,8 @@ exit=2
 
 usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
                    [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
-                   [--mode {config,direct,graph,order}]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
 __main__.py: error: argument --max-depth: invalid int value: 'bad'
 
 > python -m mavengraph --test-mode --package A --repository examples/diamond.json --package a
@@ -135,7 +140,8 @@ exit=2
 
 usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
                    [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
-                   [--mode {config,direct,graph,order}]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
 __main__.py: error: тестовое имя должно состоять из больших латинских букв
 
 > python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository missing.json
@@ -143,7 +149,8 @@ exit=2
 
 usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
                    [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
-                   [--mode {config,direct,graph,order}]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
 __main__.py: error: файл тестового репозитория не найден
 
 > python -m mavengraph --test-mode --package A --repository examples/diamond.json --test-mode=true
@@ -151,7 +158,8 @@ exit=2
 
 usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
                    [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
-                   [--mode {config,direct,graph,order}]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
 __main__.py: error: argument --test-mode: ignored explicit argument 'true'
 
 > python -m mavengraph --test-mode --package A --repository examples/diamond.json --filter A
@@ -159,7 +167,8 @@ exit=2
 
 usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
                    [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
-                   [--mode {config,direct,graph,order}]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
 __main__.py: error: фильтр исключает анализируемый корневой пакет
 
 > python -m mavengraph --test-mode --package A --repository examples/diamond.json --filter 
@@ -168,5 +177,33 @@ exit=2
 
 usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
                    [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
-                   [--mode {config,direct,graph,order}]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
 __main__.py: error: фильтр не должен содержать управляющие символы
+
+> python -m mavengraph --package junit:junit:4.13.2 --repository https://repo.maven.apache.org/maven2 --mode config --package invalid
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
+__main__.py: error: пакет Maven должен иметь вид groupId:artifactId:version (фиксированная версия)
+
+> python -m mavengraph --package junit:junit:4.13.2 --repository https://repo.maven.apache.org/maven2 --mode config --repository ftp://example.org
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
+__main__.py: error: репозиторий: нужен HTTP(S) URL без учетных данных, query и fragment
+
+> python -m mavengraph --package junit:junit:4.13.2 --repository https://repo.maven.apache.org/maven2 --mode config --repository https://example.org:bad
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order,dot,image}]
+                   [--output OUTPUT] [--dot DOT] [--show]
+__main__.py: error: Port could not be cast to integer value as 'bad'
