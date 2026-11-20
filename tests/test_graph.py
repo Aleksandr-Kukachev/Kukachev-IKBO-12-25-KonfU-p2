@@ -1,5 +1,5 @@
 import unittest
-from mavengraph.graph import build_graph
+from mavengraph.graph import build_graph, loading_order
 
 
 class MemoryRepository:
@@ -13,6 +13,15 @@ class MemoryRepository:
 
 
 class GraphTests(unittest.TestCase):
+    def test_order(self):
+        graph = {'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': []}
+        self.assertEqual(loading_order(graph), ['D', 'B', 'C', 'A'])
+
+    def test_cycle_has_no_order(self):
+        for graph in ({'A': ['A']}, {'A': ['B'], 'B': ['A']}):
+            with self.assertRaisesRegex(ValueError, 'цикл'):
+                loading_order(graph)
+
     def test_shorter_path_reexpands_node(self):
         repo = MemoryRepository({'A': ['B', 'D'], 'B': ['C'], 'C': ['D'], 'D': ['E'], 'E': ['F'], 'F': []})
         graph = build_graph(repo, 'A', 3)

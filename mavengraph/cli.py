@@ -18,7 +18,7 @@ def options(argv=None):
     parser.add_argument("--test-mode", action="store_true", help="читать тестовый JSON")
     parser.add_argument("--max-depth", type=int, default=10, help="число ребер от корня; 0 — только корень")
     parser.add_argument("--filter", default="", help="исключить имена с подстрокой, регистр учитывается")
-    parser.add_argument("--mode", choices=("config", "direct", "graph"), default="graph")
+    parser.add_argument("--mode", choices=("config", "direct", "graph", "order"), default="graph")
     args = parser.parse_args(argv)
     try:
         if args.test_mode:
@@ -64,7 +64,11 @@ def main(argv=None):
             from .graph import build_graph
             import json
             graph = build_graph(repository, args.package, args.max_depth, args.filter)
-            print(json.dumps(graph, indent=2, ensure_ascii=False))
+            if args.mode == "order":
+                from .graph import loading_order
+                print("\n".join(loading_order(graph)))
+            else:
+                print(json.dumps(graph, indent=2, ensure_ascii=False))
     except (ValueError, OSError) as exc:
         print(f"Ошибка: {exc}", file=sys.stderr)
         return 1

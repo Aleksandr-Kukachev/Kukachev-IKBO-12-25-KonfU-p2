@@ -24,3 +24,29 @@ def build_graph(repository, root, max_depth, substring=""):
         graph[node] = children
         stack.extend((child, depth + 1) for child in reversed(children))
     return graph
+
+
+def loading_order(graph):
+    """Dependencies first, each once. A cycle has no valid linear ordering."""
+    colors, result = {}, []
+    for start in graph:
+        if colors.get(start):
+            continue
+        colors[start] = 1
+        path = [start]
+        stack = [(start, iter(graph[start]))]
+        while stack:
+            node, children = stack[-1]
+            child = next(children, None)
+            if child is None:
+                colors[node] = 2
+                result.append(node)
+                stack.pop(); path.pop()
+            elif colors.get(child) == 1:
+                cycle = path[path.index(child):] + [child]
+                raise ValueError("порядок загрузки невозможен: цикл " + " -> ".join(cycle))
+            elif not colors.get(child):
+                colors[child] = 1
+                path.append(child)
+                stack.append((child, iter(graph[child])))
+    return result

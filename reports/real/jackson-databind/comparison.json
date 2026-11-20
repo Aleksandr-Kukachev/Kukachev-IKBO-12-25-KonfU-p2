@@ -1,0 +1,15 @@
+{
+  "package": "com.fasterxml.jackson.core:jackson-databind:2.17.2",
+  "our_nodes": [
+    "com.fasterxml.jackson.core:jackson-annotations:2.17.2",
+    "com.fasterxml.jackson.core:jackson-core:2.17.2",
+    "com.fasterxml.jackson.core:jackson-databind:2.17.2"
+  ],
+  "maven_nodes": [
+    "com.fasterxml.jackson.core:jackson-annotations:2.17.2",
+    "com.fasterxml.jackson.core:jackson-core:2.17.2",
+    "com.fasterxml.jackson.core:jackson-databind:2.17.2"
+  ],
+  "only_ours": [],
+  "only_maven": []
+}

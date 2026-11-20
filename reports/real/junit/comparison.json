@@ -1,0 +1,13 @@
+{
+  "package": "junit:junit:4.13.2",
+  "our_nodes": [
+    "junit:junit:4.13.2",
+    "org.hamcrest:hamcrest-core:1.3"
+  ],
+  "maven_nodes": [
+    "junit:junit:4.13.2",
+    "org.hamcrest:hamcrest-core:1.3"
+  ],
+  "only_ours": [],
+  "only_maven": []
+}

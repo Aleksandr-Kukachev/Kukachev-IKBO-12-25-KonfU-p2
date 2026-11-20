@@ -1,0 +1,172 @@
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --mode config
+exit=0
+package=A
+repository=examples/diamond.json
+test_mode=True
+max_depth=10
+filter=
+mode=config
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository examples/cycle.json
+exit=0
+{
+  "A": [
+    "B"
+  ],
+  "B": [
+    "C"
+  ],
+  "C": [
+    "A",
+    "D"
+  ],
+  "D": []
+}
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository examples/self-loop.json
+exit=0
+{
+  "A": [
+    "A"
+  ]
+}
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository examples/isolated.json
+exit=0
+{
+  "A": []
+}
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --max-depth 0
+exit=0
+{
+  "A": []
+}
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --max-depth 1
+exit=0
+{
+  "A": [
+    "B",
+    "C"
+  ],
+  "B": [],
+  "C": []
+}
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --filter B
+exit=0
+{
+  "A": [
+    "C"
+  ],
+  "C": [
+    "D"
+  ],
+  "D": []
+}
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository examples/shorter-path.json --max-depth 3
+exit=0
+{
+  "A": [
+    "B",
+    "D"
+  ],
+  "B": [
+    "C"
+  ],
+  "D": [
+    "E"
+  ],
+  "C": [
+    "D"
+  ],
+  "E": [
+    "F"
+  ],
+  "F": []
+}
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --mode order
+exit=0
+D
+B
+C
+A
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository examples/cycle.json --mode order
+exit=1
+
+Ошибка: порядок загрузки невозможен: цикл A -> B -> C -> A
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository examples/isolated.json --mode order
+exit=0
+A
+
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --max-depth -1
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order}]
+__main__.py: error: максимальная глубина должна быть неотрицательной
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --max-depth bad
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order}]
+__main__.py: error: argument --max-depth: invalid int value: 'bad'
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --package a
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order}]
+__main__.py: error: тестовое имя должно состоять из больших латинских букв
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --repository missing.json
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order}]
+__main__.py: error: файл тестового репозитория не найден
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --test-mode=true
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order}]
+__main__.py: error: argument --test-mode: ignored explicit argument 'true'
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --filter A
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order}]
+__main__.py: error: фильтр исключает анализируемый корневой пакет
+
+> python -m mavengraph --test-mode --package A --repository examples/diamond.json --filter 
+
+exit=2
+
+usage: __main__.py [-h] --package PACKAGE --repository REPOSITORY
+                   [--test-mode] [--max-depth MAX_DEPTH] [--filter FILTER]
+                   [--mode {config,direct,graph,order}]
+__main__.py: error: фильтр не должен содержать управляющие символы
