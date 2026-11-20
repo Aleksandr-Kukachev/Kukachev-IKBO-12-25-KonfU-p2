@@ -47,6 +47,12 @@ def options(argv=None):
 
 def main(argv=None):
     args = options(argv)
-    for key, value in vars(args).items():
-        print(f"{key}={value}")
+    from .repository import MavenRepository, TestRepository
+    try:
+        repository = TestRepository(args.repository) if args.test_mode else MavenRepository(args.repository)
+        for dependency in repository.dependencies(args.package):
+            print(dependency)
+    except (ValueError, OSError) as exc:
+        print(f"Ошибка: {exc}", file=sys.stderr)
+        return 1
     return 0
