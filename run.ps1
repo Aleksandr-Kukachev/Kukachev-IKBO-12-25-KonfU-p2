@@ -18,15 +18,18 @@ if (-not $pythonPath) {
 }
 if (-not $pythonPath) { throw 'Python не найден. Установите Python 3.10+ или задайте путь в MAVENGRAPH_PYTHON.' }
 $savedPath = $env:PATH
+$savedPythonPath = $env:PYTHONPATH
 $savedEncoding = $env:PYTHONIOENCODING
 Push-Location $PSScriptRoot
 try {
+    $env:PYTHONPATH = (Join-Path $PSScriptRoot 'src') + [IO.Path]::PathSeparator + $savedPythonPath
     $env:PYTHONIOENCODING = 'utf-8'
     $localDot = Get-ChildItem (Join-Path $PSScriptRoot '.tools\graphviz\*\bin\dot.exe') -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($localDot) { $env:PATH = "$($localDot.DirectoryName);$env:PATH" }
     & $pythonPath @pythonArgs -m mavengraph @args
     $resultCode = $LASTEXITCODE
 } finally {
+    $env:PYTHONPATH = $savedPythonPath
     $env:PATH = $savedPath
     $env:PYTHONIOENCODING = $savedEncoding
     Pop-Location

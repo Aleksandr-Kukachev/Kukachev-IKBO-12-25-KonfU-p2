@@ -9,6 +9,7 @@
 Команды выполняются из папки проекта:
 
 ```text
+python -m pip install -e .
 python -m mavengraph --package junit:junit:4.13.2 --repository https://repo.maven.apache.org/maven2
 ```
 
@@ -119,3 +120,9 @@ python scripts/render_examples.py --dot dot
 5. DOT, изображения и сравнение с Maven.
 
 Для каждого этапа сохранен отдельный коммит. История доступна командой `git log --oneline --reverse`.
+
+## Структура исходного кода
+
+Пакет находится в `src/mavengraph/`. Перед запуском команд и тестов
+выполните `python -m pip install -e .` из корня проекта.
+Скрипт `run.ps1` также умеет запускать исходники без установки пакета.

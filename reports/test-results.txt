@@ -6,6 +6,11 @@ test_depth_and_filter (test_graph.GraphTests.test_depth_and_filter) ... ok
 test_long_chain_without_recursion (test_graph.GraphTests.test_long_chain_without_recursion) ... ok
 test_order (test_graph.GraphTests.test_order) ... ok
 test_shorter_path_reexpands_node (test_graph.GraphTests.test_shorter_path_reexpands_node) ... ok
+test_child_properties_do_not_modify_parent (test_regressions.RegressionTests.test_child_properties_do_not_modify_parent) ... ok
+test_image_dispatch (test_regressions.RegressionTests.test_image_dispatch) ... ok
+test_invalid_output_and_urls (test_regressions.RegressionTests.test_invalid_output_and_urls) ... ok
+test_output_modes (test_regressions.RegressionTests.test_output_modes) ... ok
+test_rejected_xml_does_not_poison_active_set (test_regressions.RegressionTests.test_rejected_xml_does_not_poison_active_set) ... ok
 test_bom_import (test_repository.MavenTests.test_bom_import) ... ok
 test_invalid_xml (test_repository.MavenTests.test_invalid_xml) ... ok
 test_missing_version (test_repository.MavenTests.test_missing_version) ... ok
@@ -17,6 +22,6 @@ test_escaping_isolated_root_and_cycle (test_visualize.VisualizationTests.test_es
 test_missing_renderer_preserves_dot (test_visualize.VisualizationTests.test_missing_renderer_preserves_dot) ... ok
 
 ----------------------------------------------------------------------
-Ran 17 tests in 0.015s
+Ran 22 tests in 0.012s
 
 OK
