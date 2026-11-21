@@ -3,3 +3,9 @@ __pycache__/
 .tools/
 build/
 .local/
+.idea/
+.vscode/
+*.iml
+.venv/
+*.egg-info/
+dist/

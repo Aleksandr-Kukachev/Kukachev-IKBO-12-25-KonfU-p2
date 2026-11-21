@@ -27,7 +27,7 @@ def build_graph(repository, root, max_depth, substring=""):
 
 
 def loading_order(graph):
-    """Зависимости выводятся раньше потребителя. Для цикла порядка нет."""
+    ("Зависимости выводятся раньше потребителя. Для" " цикла порядка нет.")
     colors, result = {}, []
     for start in graph:
         if colors.get(start):
@@ -41,10 +41,13 @@ def loading_order(graph):
             if child is None:
                 colors[node] = 2
                 result.append(node)
-                stack.pop(); path.pop()
+                stack.pop()
+                path.pop()
             elif colors.get(child) == 1:
-                cycle = path[path.index(child):] + [child]
-                raise ValueError("порядок загрузки невозможен: цикл " + " -> ".join(cycle))
+                cycle = path[path.index(child) :] + [child]
+                raise ValueError(
+                    "порядок загрузки невозможен: цикл " + " -> ".join(cycle)
+                )
             elif not colors.get(child):
                 colors[child] = 1
                 path.append(child)
